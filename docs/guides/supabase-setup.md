@@ -54,7 +54,7 @@ Alembic migrations create and update:
 
 - the `vector` extension for `pgvector`
 - source document and chunk tables
-- embedding columns
+- embedding columns (`vector(768)` for `gemini-embedding-001`)
 - generated full-text search columns
 - HNSW and GIN indexes
 - chat and citation tables

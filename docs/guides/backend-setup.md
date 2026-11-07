@@ -11,6 +11,8 @@ uv add fastapi uvicorn pydantic pydantic-settings httpx structlog openai supabas
 uv add --dev pytest ruff
 ```
 
+Generation and embeddings go to Gemini through its OpenAI-compatible endpoint, so the backend still uses the OpenAI SDK. Configure it with `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL` (`gemini-embedding-001`), `GEMINI_EMBEDDING_DIMENSIONS` (`768`), and `BASE_URL` (`https://generativelanguage.googleapis.com/v1beta/openai/`).
+
 ## Database migrations
 
 Alembic owns database schema changes for this project. SQLAlchemy models describe the app tables, and Alembic migrations apply those changes to Supabase Postgres.
@@ -32,7 +34,7 @@ uv run alembic revision --autogenerate -m "add document tables"
 Always review the generated migration. Add explicit operations for Supabase/Postgres features that autogenerate cannot reliably infer:
 
 - `create extension if not exists vector`
-- `vector(1536)` columns
+- `vector(768)` columns
 - generated `tsvector` columns
 - HNSW and GIN indexes
 - RLS enablement and policies
