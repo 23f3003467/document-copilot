@@ -2,7 +2,10 @@
 name = "document-copilot-backend"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pydantic>=2.14.3",
+    "pydantic-settings>=2.16.2",
+]
 
 [tool.uv]
 add-bounds = "exact"
