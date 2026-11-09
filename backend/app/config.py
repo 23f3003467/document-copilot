@@ -1,4 +1,10 @@
-"""Single source of truth for backend environment configuration."""
+"""Single source of truth for backend environment configuration.
+
+The settings object is created once at import time and is then used throughout
+app startup and request processing. This fail-fast pattern prevents hidden
+runtime bugs where a missing Supabase credential would only surface deep inside
+another module.
+"""
 
 from typing import Annotated
 
