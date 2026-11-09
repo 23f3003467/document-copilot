@@ -1,0 +1,2 @@
+# Must match GEMINI_EMBEDDING_DIMENSIONS and the Alembic migration.
+EMBEDDING_DIMENSIONS = 768

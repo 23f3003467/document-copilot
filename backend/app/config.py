@@ -17,11 +17,12 @@ class Settings(BaseSettings):
     supabase_anon_key: str
     supabase_service_role_key: str
     database_url: str
-    openai_api_key: str
-    openai_embedding_model: str
-    openai_embedding_dimensions: int
+    GEMINI_API_KEY: str
+    GEMINI_EMBEDDING_MODEL: str
+    GEMINI_EMBEDDING_DIMENSIONS: int
+    BASE_URL: str
     # Comma-separated in .env; NoDecode skips JSON parsing so the validator sees the raw string.
-    allowed_origins: Annotated[list[str], NoDecode]
+    cors_origins: Annotated[list[str], NoDecode]
 
     @field_validator("supabase_url")
     @classmethod
@@ -43,16 +44,16 @@ class Settings(BaseSettings):
             raise ValueError("DATABASE_URL must be a PostgreSQL URL")
         return value
 
-    @field_validator("openai_embedding_dimensions")
+    @field_validator("GEMINI_EMBEDDING_DIMENSIONS")
     @classmethod
     def require_positive_dimensions(cls, value: int) -> int:
         if value <= 0:
-            raise ValueError("OPENAI_EMBEDDING_DIMENSIONS must be a positive integer")
+            raise ValueError("GEMINI_EMBEDDING_DIMENSIONS must be a positive integer")
         return value
 
-    @field_validator("allowed_origins", mode="before")
+    @field_validator("cors_origins", mode="before")
     @classmethod
-    def parse_allowed_origins(cls, value: str | list[str]) -> list[str]:
+    def parse_cors_origins(cls, value: str | list[str]) -> list[str]:
         if isinstance(value, str):
             origins = [origin.strip() for origin in value.split(",") if origin.strip()]
         else:

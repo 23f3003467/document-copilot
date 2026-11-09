@@ -36,23 +36,23 @@ Goal: a running FastAPI service with a migrated Supabase schema.
 
 - [X] Init backend deps and project layout ([backend-setup](guides/backend-setup.md))
 - [x] `app/config.py` — settings module, fail fast on missing env vars
-- [] `app/main.py` — FastAPI app, CORS, health check (`GET /health`)
+- [X] `app/main.py` — FastAPI app, CORS, health check (`GET /health`)
 - [] SQLAlchemy models in `app/database/models/`:
-  - [] `users`
-  - [] `source_documents`
-  - [] `document_chunks` (embedding + generated `tsvector`)
-  - [] `chat_threads`
-  - [] `chat_messages`
-  - [] `message_citations`
-- [] Alembic init + first migration:
-  - [] `create extension if not exists vector`
-  - [] `vector(768)` embedding column
-  - [] generated `tsvector` column on chunks
-  - [] HNSW index (vector) + GIN index (full-text)
-  - [] RLS policies (users see only their own chats)
-- [] `uv run alembic upgrade head` against Supabase direct connection
+  - [X] `users`
+  - [x] `source_documents`
+  - [x] `document_chunks` (embedding + generated `tsvector`)
+  - [x] `chat_threads`
+  - [x] `chat_messages`
+  - [x] `message_citations`
+- [x] Alembic init + first migration:
+  - [x] `create extension if not exists vector`
+  - [x] `vector(768)` embedding column
+  - [x] generated `tsvector` column on chunks
+  - [x] HNSW index (vector) + GIN index (full-text)
+  - [x] RLS policies (users see only their own chats)
+- [x] `uv run alembic upgrade head` against Supabase direct connection
 - [] `app/database/supabase.py` — user-scoped and service-role clients
-- [] Verify: `uv run uvicorn app.main:app --reload` → health check returns 200
+- [X] Verify: `uv run uvicorn app.main:app --reload` → health check returns 200
 
 ---
 
