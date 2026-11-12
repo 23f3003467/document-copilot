@@ -27,7 +27,8 @@ You need these values in backend and frontend env config (exact variable names w
 | **anon (public) key** | Same page → `anon` `public` key | Frontend (browser-safe) |
 | **service_role (secret) key** | Same page → `service_role` `secret` key | Backend only — never expose to the browser |
 | **Project ref** | Dashboard URL `supabase.com/dashboard/project/<ref>` or `supabase projects list` | CLI commands |
-| **Direct database connection string** | Dashboard → **Project Settings** → **Database** → Connection string | Alembic migrations and backend DB access |
+| **Direct database connection string** | Dashboard → **Project Settings** → **Database** → Connection string | Alembic migrations |
+| **Session pooler connection string** | Dashboard → **Project Settings** → **Database** → Connection string → Session pooler | Optional backend DB access on IPv4-only networks |
 | **Database password** | What you set at project creation | Direct Postgres connection |
 
 From the CLI you can also print API keys:
@@ -54,13 +55,13 @@ Alembic migrations create and update:
 
 - the `vector` extension for `pgvector`
 - source document and chunk tables
-- embedding columns
+- embedding columns (`vector(768)` for `gemini-embedding-001`)
 - generated full-text search columns
 - HNSW and GIN indexes
 - chat and citation tables
 - row-level security policies
 
-Use the direct/session database connection string for Alembic. Do not use the transaction pooler connection string for migrations.
+Set `DATABASE_URL` to the direct connection string for Alembic migrations. If your network does not support IPv6, set the Dashboard's IPv4-compatible **Session pooler** connection string as `DATABASE_RUNTIME_URL` for backend requests. The session pooler uses port `5432`; do not use the transaction pooler (port `6543`) for migrations or as the runtime override.
 
 From `backend/`:
 
