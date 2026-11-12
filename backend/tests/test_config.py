@@ -20,7 +20,7 @@ def _settings(**overrides: object) -> Settings:
         "GEMINI_EMBEDDING_MODEL": "embedding-model",
         "GEMINI_EMBEDDING_DIMENSIONS": 768,
         "BASE_URL": "https://example.com/v1",
-        "cors_origins": ["http://localhost:5173"],
+        "ALLOWED_ORIGINS": ["http://localhost:5173"],
     }
     values.update(overrides)
     return Settings(**values)
@@ -30,6 +30,17 @@ def test_runtime_database_url_defaults_to_direct_connection() -> None:
     settings = _settings(database_runtime_url=None)
 
     assert settings.app_database_url == settings.database_url
+
+
+def test_allowed_origins_accepts_comma_separated_values() -> None:
+    settings = _settings(
+        ALLOWED_ORIGINS="https://app.example.com, https://preview.example.com"
+    )
+
+    assert settings.cors_origins == [
+        "https://app.example.com",
+        "https://preview.example.com",
+    ]
 
 
 def test_runtime_database_url_accepts_session_pooler() -> None:

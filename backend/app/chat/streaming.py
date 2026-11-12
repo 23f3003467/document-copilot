@@ -39,11 +39,6 @@ async def stream_grounded_answer(
         {
             "type": "start",
             "messageId": message_id,
-            "message": {
-                "id": message_id,
-                "role": "assistant",
-                "parts": [{"type": "text", "text": "", "state": "streaming"}],
-            },
         }
     )
     yield _event({"type": "text-start", "id": message_id})
