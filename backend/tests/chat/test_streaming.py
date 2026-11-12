@@ -1,3 +1,4 @@
+import json
 import uuid
 from datetime import date
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -70,7 +71,10 @@ async def test_stream_grounded_answer_emits_text_and_citation_events() -> None:
     ):
         events.append(event)
 
-    assert events[0].startswith('data: {"type":"start"')
+    start_event = json.loads(events[0][len("data: ") :])
+    assert start_event["type"] == "start"
+    assert isinstance(start_event["messageId"], str)
+    assert set(start_event) == {"type", "messageId"}
     assert any('"type":"text-start"' in event for event in events)
     assert any('"type":"text-delta"' in event for event in events)
     assert any('"type":"data-citation"' in event for event in events)

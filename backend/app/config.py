@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Annotated
 from urllib.parse import urlsplit
 
-from pydantic import field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 _BACKEND_ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
@@ -34,7 +34,9 @@ class Settings(BaseSettings):
     GEMINI_CHAT_MODEL: str = "gemini-3.8-flash"
     BASE_URL: str
     # Comma-separated in .env; NoDecode skips JSON parsing so the validator sees the raw string.
-    cors_origins: Annotated[list[str], NoDecode]
+    cors_origins: Annotated[list[str], NoDecode] = Field(
+        validation_alias=AliasChoices("ALLOWED_ORIGINS", "CORS_ORIGINS")
+    )
 
     @field_validator("supabase_url")
     @classmethod
