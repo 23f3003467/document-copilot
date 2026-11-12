@@ -9,17 +9,23 @@ rest of the request.
 
 from __future__ import annotations
 
-from importlib import import_module
-from typing import Any
+import supabase
+from typing import TypedDict
 
 from fastapi import Header, HTTPException, status
 
 from app.config import settings
 
 
+class CurrentUser(TypedDict):
+    id: str
+    email: str | None
+    last_sign_in_at: str | None
+
+
 async def get_current_user(
     authorization: str | None = Header(default=None, alias="Authorization"),
-) -> dict[str, Any]:
+) -> CurrentUser:
     """Return the authenticated Supabase user for the current request.
 
     The frontend sends the JWT in the standard `Authorization: Bearer <token>`
@@ -40,10 +46,9 @@ async def get_current_user(
         )
 
     try:
-        create_client = import_module("supabase").create_client
-        client = create_client(settings.supabase_url, settings.supabase_anon_key)
+        client = supabase.create_client(settings.supabase_url, settings.supabase_anon_key)
         auth_response = client.auth.get_user(token)
-    except Exception as exc:  # pragma: no cover - boundary validation layer
+    except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired authentication token.",
@@ -56,4 +61,11 @@ async def get_current_user(
             detail="Invalid or expired authentication token.",
         )
 
-    return user
+    last_sign_in_at = getattr(user, "last_sign_in_at", None)
+    return {
+        "id": str(user.id),
+        "email": getattr(user, "email", None),
+        "last_sign_in_at": (
+            str(last_sign_in_at) if last_sign_in_at is not None else None
+        ),
+    }

@@ -14,9 +14,9 @@ The best opening diagram is a service-level view that shows the two core paths: 
 flowchart LR
     user[Analyst] --> browser[Browser<br/>React chat app]
 
-    subgraph railway[Railway]
-        frontend[Frontend service<br/>Vite build]
-        backend[Backend service<br/>FastAPI + PydanticAI]
+    subgraph hosting[Application hosting]
+        frontend[Vercel<br/>Vite static frontend]
+        backend[Hugging Face Spaces<br/>Docker + FastAPI]
     end
 
     subgraph supabase[Supabase]
@@ -49,7 +49,7 @@ flowchart LR
 - Use Supabase for identity and durable product state: users, chat threads, source documents, chunks, embeddings, and citation metadata.
 - Use Supabase `pgvector` for semantic retrieval and Postgres full-text search for keyword retrieval.
 - Make the LLM path typed and testable by using PydanticAI agents with explicit dependencies, outputs, and tool boundaries.
-- Preserve a simple deployment model on Railway: one frontend service, one stateless backend service, and hosted Supabase.
+- Preserve a simple deployment model: Vercel hosts the frontend, Hugging Face Spaces hosts the stateless backend, and Supabase remains the hosted data and auth layer.
 
 ## Stack
 
@@ -361,6 +361,7 @@ Backend settings:
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `DATABASE_URL` for Alembic and direct Postgres access
+- Optional `DATABASE_RUNTIME_URL` for backend requests through the Supabase session pooler on IPv4-only networks
 - `GEMINI_API_KEY`
 - `GEMINI_EMBEDDING_MODEL` (`gemini-embedding-001`)
 - `GEMINI_EMBEDDING_DIMENSIONS` (`768`)
@@ -371,12 +372,12 @@ Do not read environment variables directly from components, route handlers, or s
 
 ## Deployment Shape
 
-Railway should run two services:
+The application uses two hosted services:
 
-- Frontend: static Vite build served as a web app.
-- Backend: FastAPI service running Uvicorn.
+- Vercel: static Vite frontend.
+- Hugging Face Spaces: Dockerized FastAPI service running Uvicorn.
 
-Supabase remains hosted and stores the durable retrieval data. The Railway backend can stay stateless because document chunks, embeddings, full-text search vectors, chats, and citations all live in Supabase Postgres. Raw downloaded filings remain gitignored local ingestion inputs unless a later workflow stores them in object storage.
+Supabase remains hosted and stores the durable retrieval data. The backend can stay stateless because document chunks, embeddings, full-text search vectors, chats, and citations all live in Supabase Postgres. Raw downloaded filings remain gitignored local ingestion inputs unless a later workflow stores them in object storage.
 
 ## Implementation Sequence
 

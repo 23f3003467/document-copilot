@@ -13,16 +13,17 @@ import {
 type ChatInputProps = {
   status: ChatStatus
   onSend: (text: string) => void
-  onStop: () => void
+  onStop?: () => void
+  disabled?: boolean
 }
 
-export function ChatInput({ status, onSend, onStop }: ChatInputProps) {
+export function ChatInput({ status, onSend, onStop, disabled = false }: ChatInputProps) {
   const [input, setInput] = useState('')
   const isBusy = status === 'submitted' || status === 'streaming'
 
   function submit() {
     const text = input.trim()
-    if (!text || isBusy) return
+    if (!text || isBusy || disabled) return
     onSend(text)
     setInput('')
   }
@@ -34,12 +35,13 @@ export function ChatInput({ status, onSend, onStop }: ChatInputProps) {
           value={input}
           onValueChange={setInput}
           isLoading={isBusy}
+          disabled={disabled}
           onSubmit={submit}
           className="rounded-2xl"
         >
           <PromptInputTextarea placeholder="Ask about SEC filings…" />
           <PromptInputActions className="justify-end pt-1">
-            {isBusy ? (
+            {isBusy && onStop ? (
               <PromptInputAction tooltip="Stop">
                 <Button type="button" size="icon" className="rounded-full" onClick={onStop}>
                   <Square className="size-4 fill-current" />
@@ -52,7 +54,7 @@ export function ChatInput({ status, onSend, onStop }: ChatInputProps) {
                   size="icon"
                   className="rounded-full"
                   onClick={submit}
-                  disabled={input.trim() === ''}
+                  disabled={disabled || isBusy || input.trim() === ''}
                   aria-label="Send message"
                 >
                   <ArrowUp className="size-4" />

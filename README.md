@@ -18,7 +18,7 @@ Full brief: [docs/client-brief.md](docs/client-brief.md)
 | Migrations         | SQLAlchemy models + Alembic                          |
 | Retrieval          | Supabase `pgvector` + Postgres full-text search      |
 | Auth               | Supabase Auth (email only)                           |
-| Hosting            | Railway                                              |
+| Hosting            | Hugging Face Spaces (backend) + Vercel (frontend)    |
 | LLM + embeddings   | OpenAI                                               |
 
 ## Repo layout
@@ -54,6 +54,7 @@ To be added during the build. Setup guides:
 - [Supabase](docs/guides/supabase-setup.md) — account, hosted project (dashboard or CLI)
 - [Backend](docs/guides/backend-setup.md)
 - [Frontend](docs/guides/frontend-setup.md)
+- [Deployment](docs/guides/deployment.md) — Hugging Face Spaces + Vercel
 
 ## Sample SEC data
 

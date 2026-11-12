@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { LogoMark } from '@/components/Logo'
+import { ChatInput } from '@/components/chat/ChatInput'
 import { PromptSuggestion } from '@/components/ui/prompt-suggestion'
 import { useThreads } from '@/hooks/useThreads'
 import { EXAMPLE_QUESTIONS } from '@/lib/suggestions'
@@ -36,6 +37,12 @@ export function ChatEmptyPage() {
           </p>
         </div>
       </div>
+
+      <ChatInput
+        status="ready"
+        onSend={(prompt) => void startConversation(prompt)}
+        disabled={isStarting}
+      />
 
       <div className="grid w-full max-w-xl gap-2 sm:grid-cols-2">
         {EXAMPLE_QUESTIONS.map((question) => (

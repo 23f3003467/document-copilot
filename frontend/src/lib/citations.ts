@@ -16,6 +16,7 @@ export type PipelineStage =
   | 'analyzing'
   | 'searching'
   | 'reading'
+  | 'retrying'
   | 'verifying'
   | 'streaming'
 

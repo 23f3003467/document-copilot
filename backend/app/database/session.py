@@ -1,22 +1,44 @@
-"""SQLAlchemy session factory used by the backend request layer.
-
-The app keeps database access behind a small session factory so every route can
-open a transaction, read or write rows, and close cleanly. This lets us keep the
-same ORM models for chat threads, messages, and future retrieval work without
-duplicating connection setup in each endpoint.
-"""
+"""SQLAlchemy engine and session factory for direct Postgres access."""
 
 from __future__ import annotations
 
+from collections.abc import Generator
+from contextlib import contextmanager
+
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import settings
 
-engine = create_engine(settings.database_url, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+_engine: Engine | None = None
+_session_factory: sessionmaker[Session] | None = None
 
 
-def get_db_session() -> Session:
-    """Return a database session for a single request lifecycle."""
-    return SessionLocal()
+def get_engine() -> Engine:
+    global _engine, _session_factory
+    if _engine is None:
+        _engine = create_engine(settings.app_database_url)
+        _session_factory = sessionmaker(bind=_engine, expire_on_commit=False)
+    return _engine
+
+
+def _create_session() -> Session:
+    if _session_factory is None:
+        get_engine()
+    assert _session_factory is not None
+    return _session_factory()
+
+
+@contextmanager
+def get_session() -> Generator[Session, None, None]:
+    session = _create_session()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+def get_db_session() -> Generator[Session, None, None]:
+    with get_session() as session:
+        yield session

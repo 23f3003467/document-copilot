@@ -10,7 +10,7 @@ This file is the source of truth for any coding agent (Claude Code, Cursor, Code
 - **Migrations:** SQLAlchemy models + Alembic from the backend
 - **Retrieval:** Supabase `pgvector` + Postgres full-text search
 - **Auth:** Supabase Auth
-- **Hosting:** Railway (backend service + frontend service)
+- **Hosting:** Hugging Face Spaces (Docker backend) + Vercel (static frontend)
 - **LLM + embeddings:** OpenAI
 
 Stack is locked unless explicitly changed. Don't propose alternatives without a stated reason.

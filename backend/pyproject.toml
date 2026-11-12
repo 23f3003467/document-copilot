@@ -26,6 +26,10 @@ dependencies = [
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
+[tool.pytest.ini_options]
+markers = [
+    "integration: requires live database, embedding, or language-model services",
+]
 
 [tool.uv]
 add-bounds = "exact"
@@ -34,4 +38,8 @@ add-bounds = "exact"
 dev = [
     "pytest>=9.2.0",
     "ruff>=0.17.4",
+    { include-group = "ingestion" },
+]
+ingestion = [
+    "docling==2.96.0",
 ]

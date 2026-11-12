@@ -37,7 +37,7 @@ Goal: a running FastAPI service with a migrated Supabase schema.
 - [X] Init backend deps and project layout ([backend-setup](guides/backend-setup.md))
 - [x] `app/config.py` — settings module, fail fast on missing env vars
 - [X] `app/main.py` — FastAPI app, CORS, health check (`GET /health`)
-- [] SQLAlchemy models in `app/database/models/`:
+- [x] SQLAlchemy models in `app/database/models/`:
   - [X] `users`
   - [x] `source_documents`
   - [x] `document_chunks` (embedding + generated `tsvector`)
@@ -83,18 +83,18 @@ Goal: end-to-end chat UI streaming from FastAPI, no real retrieval yet.
 
 **Backend**
 
-- [] Chat thread CRUD: list threads, create thread, load message history
-- [] `POST /chat/stream` — accepts AI SDK message format, streams a stubbed assistant reply
-- [] Persist user + assistant messages to `chat_messages` after stream completes
-- [] `403` when user accesses another user's thread
+- [X] Chat thread CRUD: list threads, create thread, load message history
+- [X] `POST /chat/stream` — accepts AI SDK message format, streams a stubbed assistant reply
+- [X] Persist user + assistant messages to `chat_messages` after stream completes
+- [X] `403` when user accesses another user's thread
 
 **Frontend**
 
-- [] React Router: login, chat list, chat thread routes
-- [] AI SDK chat primitives pointed at `POST /chat/stream` with Supabase bearer token
-- [] Thread sidebar (past conversations)
-- [] Basic message list + input + streaming indicator
-- [] Verify: create thread, send message, see streamed stub response, reload and see history
+- [X] React Router: login, chat list, chat thread routes
+- [X] AI SDK chat primitives pointed at `POST /chat/stream` with Supabase bearer token
+- [X] Thread sidebar (past conversations)
+- [X] Basic message list + input + streaming indicator
+- [X] Verify: create thread, send message, see streamed stub response, reload and see history
 
 ---
 
@@ -102,15 +102,15 @@ Goal: end-to-end chat UI streaming from FastAPI, no real retrieval yet.
 
 Goal: SEC filings in the corpus are parsed, chunked, embedded, and stored in Supabase.
 
-- [] `ingest/` scripts (or CLI entrypoint) for one-off corpus loading
-- [] HTML → normalized Markdown extraction (preserve page/section metadata)
-- [] Chunking strategy (size + overlap; store chunk index, page, section, ticker, filing type, year)
-- [] Write `source_documents` rows with filing metadata from `manifest.json`
-- [] Write `document_chunks` rows with text + metadata
-- [] Gemini embedding generation → store `vector(768)` per chunk
-- [] Generated `tsvector` populated for full-text search
-- [] Idempotent re-run (skip already-ingested documents)
-- [] Unit tests: chunking logic, metadata extraction
+- [x] `ingest/` scripts (or CLI entrypoint) for one-off corpus loading
+- [x] HTML → normalized Markdown/table extraction (preserve page/section metadata)
+- [x] Chunking strategy (size + overlap; store chunk index, page, section, ticker, filing type, year)
+- [x] Write `source_documents` rows with filing metadata from `manifest.json`
+- [x] Write `document_chunks` rows with text + metadata
+- [x] Gemini embedding generation → store `vector(768)` per chunk
+- [x] Generated `tsvector` populated for full-text search
+- [x] Idempotent re-run (skip already-ingested documents)
+- [x] Unit tests: chunking logic, metadata extraction
 - [] Run ingestion on full sample corpus (25 filings × 5 companies)
 - [] Verify: chunks exist in Supabase; spot-check a known passage (e.g. Apple revenue mix table)
 
@@ -120,11 +120,11 @@ Goal: SEC filings in the corpus are parsed, chunked, embedded, and stored in Sup
 
 Goal: a user question returns ranked, relevant source passages.
 
-- [] `retrieval/queries.py` — pgvector semantic search over `document_chunks`
-- [] `retrieval/queries.py` — Postgres full-text search over `search_vector`
-- [] `retrieval/fusion.py` — Reciprocal Rank Fusion in Python
-- [] `retrieval/retriever.py` — query → fused ranked passages + neighbor chunks
-- [] Unit tests: fusion ranking, query assembly (mock DB)
+- [x] `retrieval/queries.py` — pgvector semantic search over `document_chunks`
+- [x] `retrieval/queries.py` — Postgres full-text search over `search_vector`
+- [x] `retrieval/fusion.py` — Reciprocal Rank Fusion in Python
+- [x] `retrieval/retriever.py` — query → fused ranked passages + neighbor chunks
+- [x] Unit tests: fusion ranking, query assembly (mock DB)
 - [] Integration test (optional, `@pytest.mark.integration`): real query against ingested corpus
 - [] Verify: test queries from [client-brief](client-brief.md) return relevant chunks (manual or scripted)
 
@@ -134,14 +134,14 @@ Goal: a user question returns ranked, relevant source passages.
 
 Goal: grounded answers with enforced citations — the core product contract.
 
-- [] `assistant/instructions.md` — product contract (cite everything, refuse to invent, no stock picks)
-- [] PydanticAI agent with typed deps (`DocumentAgentDeps`) and output (`GroundedAnswer`)
-- [] Agent tools: `search_filings`, `read_chunk`, `read_surrounding_chunks`
-- [] `chat/orchestrator.py` — one turn: retrieve → agent → validate → stream → persist
-- [] `grounding/validator.py` — every citation maps to a retrieved passage; fail closed on violation
-- [] `chat/streaming.py` — AI SDK-compatible stream (text deltas + citation metadata parts)
-- [] Persist `message_citations` linked to assistant messages
-- [] Unit tests: citation validation, grounding enforcement, message conversion
+- [x] `assistant/instructions.md` — product contract (cite everything, refuse to invent, no stock picks)
+- [x] PydanticAI agent with typed deps (`DocumentAgentDeps`) and output (`GroundedAnswer`)
+- [x] Agent tools: `search_filings`, `read_chunk`, `read_surrounding_chunks`
+- [x] `chat/orchestrator.py` — one turn: retrieve → agent → validate → stream → persist
+- [x] `grounding/validator.py` — every citation maps to a retrieved passage; fail closed on violation
+- [x] `chat/streaming.py` — AI SDK-compatible stream (text deltas + citation metadata parts)
+- [x] Persist `message_citations` linked to assistant messages
+- [x] Unit tests: citation validation, grounding enforcement, message conversion
 - [] Verify against [client-brief example questions](client-brief.md#example-analyst-questions):
   - [] Answers cite specific filings and pages
   - [] Under-specified questions get "not enough evidence" responses

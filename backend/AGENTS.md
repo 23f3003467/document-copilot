@@ -9,8 +9,8 @@ This is the FastAPI service for Document Copilot. Read [../AGENTS.md](../AGENTS.
 - Pydantic v2 + pydantic-settings
 - `httpx` for outbound HTTP
 - `pytest` for tests
-- Supabase Python client (DB + auth)
-- SQLAlchemy models + Alembic migrations for database schema changes
+- Supabase Python client for authentication
+- SQLAlchemy models + repositories and Alembic migrations for database access/schema
 - OpenAI SDK for LLM & embeddings
 - Supabase `pgvector` for semantic search and Postgres full-text search for keyword retrieval. Hybrid search should run vector and full-text queries separately, then fuse ranked results in Python with Reciprocal Rank Fusion.
 - `structlog` for logging
@@ -23,6 +23,7 @@ See universal policy in [../AGENTS.md](../AGENTS.md). Backend-specific:
 - **Prefer stdlib:** `pathlib`, `datetime`, `uuid`, `enum`, `dataclasses`, `asyncio`, `collections`, `itertools`, `json`, `urllib`.
 - **Not OK without justification:** `python-dateutil`, `toolz`, `funcy`, `more-itertools`, small JSON/string micro-libs, "ergonomic" wrappers on top of declared SDKs.
 - Dev deps (test/lint/build) have a looser bar but still pick widely-used, low-footprint tools (`pytest`, `ruff`, `httpx`).
+- Docling is isolated to the `ingestion` dependency group (included by `dev`) so production installs can omit its parser/model stack.
 
 ## Layout (to be created during build)
 
@@ -41,9 +42,9 @@ backend/
 │   ├── assistant/       # PydanticAI agent, deps, outputs, instructions
 │   ├── retrieval/       # pgvector/full-text queries, RRF fusion, source passage lookup
 │   ├── grounding/       # citation validation and answer grounding checks
-│   ├── database/        # SQLAlchemy models, Supabase client wrapper, typed query helpers
+│   ├── database/        # SQLAlchemy models, sessions, and repositories
 │   └── prompts/         # prompt/instruction templates if not colocated with assistant
-├── ingest/              # one-off ingestion scripts (Markdown extraction, chunking, embedding, Supabase writes)
+├── ingest/              # one-off ingestion scripts (HTML extraction, chunking, embeddings, Postgres writes)
 ├── tests/
 └── pyproject.toml
 ```

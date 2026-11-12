@@ -3,6 +3,7 @@ import { ApiError } from '@/lib/http'
 export type ChatErrorKind =
   | 'network'
   | 'auth'
+  | 'quota'
   | 'grounding'
   | 'retrieval'
   | 'generic'
@@ -51,6 +52,15 @@ export function classifyChatError(error: Error): ClassifiedChatError {
   }
 
   const text = error.message || ''
+
+  if (messageIncludesAny(text, ['quota', 'rate limit', 'rate_limit'])) {
+    return {
+      kind: 'quota',
+      title: 'AI quota reached',
+      message: text,
+      showLoginLink: false,
+    }
+  }
 
   if (
     messageIncludesAny(text, [
